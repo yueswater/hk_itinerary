@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港旅遊行程表</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 1px 3px rgba(30, 41, 59, 0.1);
+        }
+        
+        .header {
+            background-color: #1e293b;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .travel-dates {
+            background-color: #334155;
+            padding: 12px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: 500;
+        }
+        
+        .navigation {
+            background-color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(30, 41, 59, 0.05);
+        }
+        
+        .nav-button {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+            min-width: 140px;
+        }
+        
+        .nav-button:hover {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        
+        .nav-button.active {
+            background-color: #1e293b;
+            color: white;
+            border-color: #1e293b;
+        }
+        
+        .day-content {
+            padding: 40px;
+            display: none;
+        }
+        
+        .day-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .day-title {
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1e293b;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(30, 41, 59, 0.1);
+        }
+        
+        .schedule-table thead {
+            background-color: #1e293b;
+            color: white;
+        }
+        
+        .schedule-table th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .schedule-table th:first-child {
+            width: 180px;
+        }
+        
+        .schedule-table th:nth-child(2) {
+            width: auto;
+        }
+        
+        .schedule-table th:last-child {
+            width: 280px;
+        }
+        
+        .schedule-table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .schedule-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .schedule-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-table td {
+            padding: 20px;
+            vertical-align: top;
+        }
+        
+        .time-cell {
+            font-weight: 600;
+            color: #1e293b;
+            background-color: #f8fafc;
+            border-right: 2px solid #e2e8f0;
+            text-align: center;
+            font-size: 1.05em;
+        }
+        
+        .event-cell {
+            color: #334155;
+        }
+        
+        .event-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .event-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1e293b;
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .event-description {
+            color: #64748b;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .notes-cell {
+            background-color: #f8fafc;
+            border-left: 2px solid #e2e8f0;
+            color: #475569;
+            font-size: 0.9em;
+        }
+        
+        .notes-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+        
+        .route-selector {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .route-selector h3 {
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .route-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .route-button {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .route-button:hover {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        
+        .route-button.active {
+            background-color: #1e293b;
+            color: white;
+            border-color: #1e293b;
+        }
+        
+        .route-content {
+            display: none;
+        }
+        
+        .route-content.active {
+            display: block;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .footer-item h3 {
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+        
+        .footer-item p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        
+        .footer-note {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #94a3b8;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(30, 41, 59, 0.1);
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background-color: #334155;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(30, 41, 59, 0.15);
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: #f1f5f9;
+            color: #475569;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .day-content {
+                padding: 20px;
+            }
+            
+            .navigation {
+                padding: 20px 15px;
+                gap: 6px;
+            }
+            
+            .nav-button {
+                min-width: 100px;
+                padding: 10px 16px;
+                font-size: 0.9em;
+            }
+            
+            .schedule-table {
+                font-size: 0.9em;
+            }
+            
+            .schedule-table th,
+            .schedule-table td {
+                padding: 15px 12px;
+            }
+            
+            .schedule-table th:first-child,
+            .schedule-table th:last-child {
+                width: auto;
+            }
+            
+            .time-cell {
+                font-size: 0.95em;
+            }
+        }
+        
+        @media print {
+            .print-button, .navigation { display: none; }
+            body { background: white; }
+            .container { box-shadow: none; }
+            .day-content { display: block !important; }
+            .route-content { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i> 列印行程表
+    </button>
+    
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-map"></i> 香港旅遊行程表</h1>
+            <p class="subtitle">精彩四天三夜・美食文化之旅</p>
+            <div class="travel-dates">
+                <i class="fas fa-calendar"></i> 2024年8月14日 - 8月18日
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-button active" onclick="showDay('day1')">
+                第1天 8/14
+            </button>
+            <button class="nav-button" onclick="showDay('day2')">
+                第2天 8/15
+            </button>
+            <button class="nav-button" onclick="showDay('day3')">
+                第3天 8/16
+            </button>
+            <button class="nav-button" onclick="showDay('day4')">
+                第4天 8/17
+            </button>
+            <button class="nav-button" onclick="showDay('day5')">
+                第5天 8/18
+            </button>
+        </div>
+        
+        <!-- 第一天 -->
+        <div id="day1" class="day-content active">
+            <div class="day-title">第1天 - 抵達香港</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>地點 / 事件</th>
+                        <th>備註 / 建議</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-cell">16:25</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-plane"></i></div>
+                                抵達香港機場
+                            </div>
+                            <div class="event-description">出關取行李、搭乘機場快線至九龍站轉計程車</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">交通建議</div>
+                            機場快線較快速，約24分鐘。可考慮購買八達通卡
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">18:20</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-bed"></i></div>
+                                入住飯店
+                            </div>
+                            <div class="event-description">辦理入住手續、稍作休息</div>
+                            <span class="category-badge">住宿</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">注意事項</div>
+                            檢查房間設施，確認隔日行程
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">19:15</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-walking"></i></div>
+                                星光大道 / 維港海濱
+                            </div>
+                            <div class="event-description">漫步星光大道，欣賞維多利亞港夜景</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">拍照建議</div>
+                            傍晚時分光線佳，適合拍攝港島天際線
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">20:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-star"></i></div>
+                                幻彩詠香江
+                            </div>
+                            <div class="event-description">觀賞香港著名燈光音樂匯演</div>
+                            <span class="category-badge">表演</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">觀賞位置</div>
+                            建議在尖沙咀海濱長廊觀賞，視野最佳
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">20:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-utensils"></i></div>
+                                晚餐時間
+                            </div>
+                            <div class="event-description">享用晚餐後返回飯店休息</div>
+                            <span class="category-badge">餐飲</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">美食推薦</div>
+                            可嘗試港式茶餐廳或海鮮料理
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 第二天 -->
+        <div id="day2" class="day-content">
+            <div class="day-title">第2天 - 文化探索之旅</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>地點 / 事件</th>
+                        <th>備註 / 建議</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-cell">09:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-subway"></i></div>
+                                前往宋皇臺
+                            </div>
+                            <div class="event-description">搭乘屯馬線前往宋皇臺站</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">交通提醒</div>
+                            建議使用八達通，車程約30分鐘
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">09:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-tree"></i></div>
+                                九龍寨城公園
+                            </div>
+                            <div class="event-description">參觀歷史悠久的九龍寨城遺址公園</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">參觀重點</div>
+                            了解香港獨特的歷史文化背景
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">11:20</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-leaf"></i></div>
+                                南蓮園池 / 志蓮淨苑
+                            </div>
+                            <div class="event-description">欣賞中式園林建築，享用素食午餐</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">用餐建議</div>
+                            園內素食餐廳品質優良，環境清幽
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">14:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-place-of-worship"></i></div>
+                                黃大仙祠
+                            </div>
+                            <div class="event-description">參拜香港最著名的道教廟宇</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">文化體驗</div>
+                            可體驗求籤文化，但要保持尊重態度
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">15:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-palette"></i></div>
+                                香港美術館
+                            </div>
+                            <div class="event-description">欣賞中國古代藝術品和當代香港藝術作品</div>
+                            <span class="category-badge">博物館</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">參觀建議</div>
+                            位於尖沙咀，收藏豐富，建議預留2小時參觀
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">18:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-utensils"></i></div>
+                                晚餐自理
+                            </div>
+                            <div class="event-description">可選擇返回海濱散步或就近用餐</div>
+                            <span class="category-badge">自由時間</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">用餐選擇</div>
+                            附近有多間茶餐廳和港式料理
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 第三天 -->
+        <div id="day3" class="day-content">
+            <div class="day-title">第3天 - 香港迪士尼樂園</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>地點 / 事件</th>
+                        <th>備註 / 建議</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-cell">08:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-subway"></i></div>
+                                前往迪士尼
+                            </div>
+                            <div class="event-description">搭乘地鐵轉乘迪士尼線</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">交通建議</div>
+                            建議早出發避開人潮，約需45分鐘車程
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">10:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-magic"></i></div>
+                                香港迪士尼樂園
+                            </div>
+                            <div class="event-description">享受全日迪士尼奇妙之旅，觀賞各項表演和遊樂設施</div>
+                            <span class="category-badge">主題樂園</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">遊玩攻略</div>
+                            下載官方App查看演出時間表，建議購買快速通行證
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">12:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-utensils"></i></div>
+                                園內午餐
+                            </div>
+                            <div class="event-description">在園內餐廳享用主題餐點</div>
+                            <span class="category-badge">餐飲</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">用餐建議</div>
+                            可預訂餐廳或選擇快餐，避開12:00-13:00高峰期
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">19:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-star"></i></div>
+                                煙火表演
+                            </div>
+                            <div class="event-description">觀賞睡公主城堡的煙火表演</div>
+                            <span class="category-badge">表演</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">觀賞位置</div>
+                            建議提前30分鐘到城堡前佔位
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">21:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-subway"></i></div>
+                                返回飯店
+                            </div>
+                            <div class="event-description">搭乘地鐵返回市區</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">返程提醒</div>
+                            人潮較多，預留充足時間
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 第四天 -->
+        <div id="day4" class="day-content">
+            <div class="day-title">第4天 - 文化藝術巡禮</div>
+            
+            <div class="route-selector">
+                <h3>請選擇您的文化路線</h3>
+                <div class="route-buttons">
+                    <button class="route-button active" onclick="showRoute('routeA')">
+                        A線：中環文化路線
+                    </button>
+                    <button class="route-button" onclick="showRoute('routeB')">
+                        B線：西九文化區
+                    </button>
+                </div>
+            </div>
+            
+            <div id="routeA" class="route-content active">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>時間</th>
+                            <th>地點 / 事件</th>
+                            <th>備註 / 建議</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="time-cell">10:30</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-building"></i></div>
+                                    PMQ 元創方
+                                </div>
+                                <div class="event-description">探索創意設計及文化商場</div>
+                                <span class="category-badge">文創</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">購物提醒</div>
+                                有許多本地設計師作品和特色商品
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-cell">12:30</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-university"></i></div>
+                                    大館
+                                </div>
+                                <div class="event-description">參觀古蹟活化的藝術文化區</div>
+                                <span class="category-badge">古蹟</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">用餐選擇</div>
+                                館內有優質餐廳，或可到士丹利街覓食
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-cell">14:15</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-place-of-worship"></i></div>
+                                    文武廟
+                                </div>
+                                <div class="event-description">參觀香港最古老的道教廟宇之一</div>
+                                <span class="category-badge">古蹟</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">文化體驗</div>
+                                可欣賞巨型盤香，感受傳統文化氛圍
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-cell">15:30</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-hospital"></i></div>
+                                    醫學博物館
+                                </div>
+                                <div class="event-description">參觀香港醫學歷史展覽（選配行程）</div>
+                                <span class="category-badge">博物館</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">參觀建議</div>
+                                若時間充裕可參觀，了解香港醫學發展史
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="routeB" class="route-content">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>時間</th>
+                            <th>地點 / 事件</th>
+                            <th>備註 / 建議</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="time-cell">10:00</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-palette"></i></div>
+                                    M+ 博物館
+                                </div>
+                                <div class="event-description">參觀亞洲首屈一指的當代視覺文化博物館</div>
+                                <span class="category-badge">博物館</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">參觀重點</div>
+                                現代藝術收藏豐富，建築本身也值得欣賞
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-cell">13:00</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-utensils"></i></div>
+                                    午餐時間
+                                </div>
+                                <div class="event-description">在藝方享用午餐或自由覓食</div>
+                                <span class="category-badge">餐飲</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">用餐選擇</div>
+                                西九文化區內有多間優質餐廳
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-cell">14:30</td>
+                            <td class="event-cell">
+                                <div class="event-title">
+                                    <div class="event-icon"><i class="fas fa-crown"></i></div>
+                                    香港故宮文化博物館
+                                </div>
+                                <div class="event-description">欣賞珍貴的中華文物收藏</div>
+                                <span class="category-badge">博物館</span>
+                            </td>
+                            <td class="notes-cell">
+                                <div class="notes-title">預約提醒</div>
+                                需提前網上預約時段，建議預留充足參觀時間
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 第五天 -->
+        <div id="day5" class="day-content">
+            <div class="day-title">第5天 - 昂坪大佛與離境</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>地點 / 事件</th>
+                        <th>備註 / 建議</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-cell">09:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-plane"></i></div>
+                                市區預辦登機
+                            </div>
+                            <div class="event-description">若航空公司提供此服務，可先辦理登機</div>
+                            <span class="category-badge">服務</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">服務確認</div>
+                            僅部分航空公司提供，需事先確認
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">10:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-mountain"></i></div>
+                                昂坪360纜車
+                            </div>
+                            <div class="event-description">搭乘纜車前往昂坪，沿途欣賞美景</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">搭乘建議</div>
+                            建議選擇水晶車廂，視野更佳但需額外付費
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">11:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-shopping-bag"></i></div>
+                                昂坪市集
+                            </div>
+                            <div class="event-description">遊覽主題商店街，購買紀念品</div>
+                            <span class="category-badge">購物</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">購物提醒</div>
+                            有許多香港特色伴手禮和佛教文物
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">11:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-place-of-worship"></i></div>
+                                寶蓮寺 / 天壇大佛
+                            </div>
+                            <div class="event-description">參拜寶蓮寺，登上天壇大佛</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">參觀重點</div>
+                            大佛高34米，需爬268級階梯到達佛像基座
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">13:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-leaf"></i></div>
+                                心經簡林
+                            </div>
+                            <div class="event-description">參觀木柱群組成的心經藝術裝置</div>
+                            <span class="category-badge">景點</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">拍照建議</div>
+                            環境清幽，適合拍攝紀念照片
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">15:30</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-subway"></i></div>
+                                返回機場
+                            </div>
+                            <div class="event-description">搭乘纜車回東涌，轉機場快線前往機場</div>
+                            <span class="category-badge">交通</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">時間控制</div>
+                            預留充足時間，避免錯過班機
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">21:00</td>
+                        <td class="event-cell">
+                            <div class="event-title">
+                                <div class="event-icon"><i class="fas fa-plane"></i></div>
+                                航班起飛
+                            </div>
+                            <div class="event-description">結束愉快的香港之旅</div>
+                            <span class="category-badge">離境</span>
+                        </td>
+                        <td class="notes-cell">
+                            <div class="notes-title">離境提醒</div>
+                            提前2-3小時到達機場辦理手續
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-item">
+                    <h3><i class="fas fa-info-circle"></i> 旅遊重點</h3>
+                    <p>本次行程涵蓋香港經典景點、文化古蹟、現代藝術館及主題樂園，讓您深度體驗香港多元文化魅力</p>
+                </div>
+                <div class="footer-item">
+                    <h3><i class="fas fa-subway"></i> 交通資訊</h3>
+                    <p>主要使用港鐵系統、機場快線、計程車及昂坪360纜車，建議購買八達通卡以便搭乘</p>
+                </div>
+                <div class="footer-item">
+                    <h3><i class="fas fa-mobile"></i> 實用工具</h3>
+                    <p>推薦下載：迪士尼官方App、港鐵App、OpenRice美食app、Google翻譯等實用應用程式</p>
+                </div>
+            </div>
+            <div class="footer-note">
+                <i class="fas fa-lightbulb"></i> 溫馨提醒：請提前預約香港故宮文化博物館參觀時段，並隨時關注各景點的開放時間及特殊活動資訊
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDay(dayId) {
+            // 隱藏所有日程內容
+            const allDays = document.querySelectorAll('.day-content');
+            allDays.forEach(day => day.classList.remove('active'));
+            
+            // 移除所有按鈕的 active 狀態
+            const allButtons = document.querySelectorAll('.nav-button');
+            allButtons.forEach(button => button.classList.remove('active'));
+            
+            // 顯示選中的日程
+            document.getElementById(dayId).classList.add('active');
+            
+            // 設置對應按鈕為 active
+            event.target.classList.add('active');
+        }
+        
+        function showRoute(routeId) {
+            // 隱藏所有路線內容
+            const allRoutes = document.querySelectorAll('.route-content');
+            allRoutes.forEach(route => route.classList.remove('active'));
+            
+            // 移除所有路線按鈕的 active 狀態
+            const allRouteButtons = document.querySelectorAll('.route-button');
+            allRouteButtons.forEach(button => button.classList.remove('active'));
+            
+            // 顯示選中的路線
+            document.getElementById(routeId).classList.add('active');
+            
+            // 設置對應按鈕為 active
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
